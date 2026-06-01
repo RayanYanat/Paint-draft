@@ -1,0 +1,196 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Typography */
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+  --font-heading: var(--font-dm-sans);
+
+  /* Brand Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-dim: var(--brand-dim);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border-subtle: var(--border-subtle);
+  --color-text-muted: var(--text-muted);
+
+  /* shadcn tokens */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  /* Painting Brand Palette — Professional deep blue */
+  --background:        #0B0D10;
+  --foreground:        #F0F2F5;
+  --brand:             #63A4FF;
+  --brand-dim:         #3B7BDB;
+  --surface:           #111418;
+  --surface-elevated:  #181D24;
+  --border-subtle:     rgba(255, 255, 255, 0.07);
+  --text-muted:        #6B7280;
+
+  /* shadcn compatibility */
+  --card:              #111418;
+  --card-foreground:   #F0F2F5;
+  --popover:           #111418;
+  --popover-foreground:#F0F2F5;
+  --primary:           #63A4FF;
+  --primary-foreground:#0B0D10;
+  --secondary:         #181D24;
+  --secondary-foreground: #F0F2F5;
+  --muted:             #181D24;
+  --muted-foreground:  #6B7280;
+  --accent:            #63A4FF;
+  --accent-foreground: #0B0D10;
+  --destructive:       oklch(0.577 0.245 27.325);
+  --border:            rgba(255, 255, 255, 0.07);
+  --input:             rgba(255, 255, 255, 0.07);
+  --ring:              #63A4FF;
+  --radius:            0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: #0B0D10;
+    scroll-behavior: smooth;
+    scroll-padding-top: 4.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      scroll-padding-top: 5.5rem;
+    }
+  }
+
+  body {
+    background-color: #0B0D10;
+    color: #F0F2F5;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+  }
+
+  .font-data {
+    font-family: var(--font-jetbrains), monospace;
+  }
+}
+
+/* ── Locked screen initial states ──────────────────────────────────────── */
+.ls-bracket,
+.ls-badge,
+.ls-mark,
+.ls-sub,
+.ls-strip  { opacity: 0; }
+.ls-title-1,
+.ls-title-2 { clip-path: inset(0% 100% 0% 0%); }
+.ls-divider  { transform: scaleX(0); transform-origin: left center; }
+
+/* ── Hero initial states ───────────────────────────────────────────────── */
+.hero-badge,
+.hero-title-1,
+.hero-title-2,
+.hero-title-3,
+.hero-divider,
+.hero-sub,
+.hero-cta,
+.hero-scroll,
+.hero-data-strip,
+.hero-frame,
+.hero-rightbar {
+  opacity: 0;
+}
+
+@media (max-width: 1023px) {
+  .hero-frame    { display: none !important; }
+  .hero-rightbar { display: none !important; }
+  .hero-atmo-side    { display: none !important; }
+  .hero-atmo-central { display: none !important; }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.12); opacity: 0.75; }
+}
+
+@keyframes float-data {
+  0%, 100% { transform: translateY(0px);   opacity: var(--d-op, 0.055); }
+  33%       { transform: translateY(-10px); opacity: calc(var(--d-op, 0.055) * 1.6); }
+  66%       { transform: translateY(-4px);  opacity: calc(var(--d-op, 0.055) * 0.7); }
+}
+
+@keyframes grain {
+  0%   { background-position:   0%   0%; }
+  10%  { background-position:  -5%  -10%; }
+  20%  { background-position: -15%   5%; }
+  30%  { background-position:   7% -25%; }
+  40%  { background-position:  -5%  25%; }
+  50%  { background-position: -15%  10%; }
+  60%  { background-position:  15%   0%; }
+  70%  { background-position:   0%  15%; }
+  80%  { background-position:   3%  35%; }
+  90%  { background-position: -10%  10%; }
+}
+
+@layer utilities {
+  .text-brand        { color: #63A4FF; }
+  .bg-surface        { background-color: #111418; }
+  .bg-surface-elevated { background-color: #181D24; }
+  .border-subtle     { border-color: rgba(255, 255, 255, 0.07); }
+
+  .glow-brand {
+    box-shadow: 0 0 30px rgba(99, 164, 255, 0.25),
+                0 0 60px rgba(99, 164, 255, 0.1);
+  }
+  .text-glow-brand {
+    text-shadow: 0 0 40px rgba(99, 164, 255, 0.4);
+  }
+
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-top: 8rem;
+      padding-bottom: 8rem;
+    }
+  }
+}
