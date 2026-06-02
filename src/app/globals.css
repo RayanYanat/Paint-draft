@@ -249,7 +249,15 @@ html.lenis body { height: auto; }
 .mh-cta,
 .mh-stage,
 .mh-scroll { opacity: 0; }
-.hero-name .split-word { transform: translateY(110%); }
+.hero-name .split-word {
+  transform: translateY(110%);
+  /* Failsafe reveal — the prospect's name is the entire pitch, so it must
+     surface even if the GSAP opener never boots (bundle/JS failure) or stalls.
+     In the healthy path GSAP finishes (~2.1s) well before this fires, so it's
+     a no-op; reduced-motion neutralizes it via the block below. */
+  animation: hero-name-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.5s forwards;
+}
+@keyframes hero-name-reveal { to { transform: translateY(0); } }
 
 /* Locked screen initial states */
 .lk-rule,

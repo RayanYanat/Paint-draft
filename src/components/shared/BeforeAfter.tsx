@@ -181,10 +181,13 @@ export default function BeforeAfter({
         />
       )}
 
-      {/* Dark legibility overlay (hero full-bleed) */}
+      {/* Dark legibility overlay (hero full-bleed). Warm-ink, ramped so the
+          headline band (lower-middle) and CTAs stay crisp over bright "after"
+          photos without flattening the top of the image. Sits below the
+          handle/labels (z-30/20), so only the photo is darkened. */}
       {overlay && (
         <div className="absolute inset-0 z-[15] pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.55) 100%)" }} />
+          style={{ background: "linear-gradient(to bottom, rgba(26,20,15,0.05) 0%, rgba(26,20,15,0.16) 34%, rgba(26,20,15,0.46) 66%, rgba(26,20,15,0.72) 100%)" }} />
       )}
 
       {/* Divider + handle */}
