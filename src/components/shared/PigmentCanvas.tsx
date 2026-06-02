@@ -51,6 +51,10 @@ export default function PigmentCanvas() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Desktop-only: a full-screen canvas redrawn every frame is wasted battery
+    // on phones/tablets, where the faint dust barely reads anyway. The warm
+    // paper + static grain keep the atmosphere.
+    if (window.innerWidth < 1024) return;
 
     const canvas = ref.current;
     if (!canvas) return;

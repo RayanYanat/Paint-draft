@@ -195,9 +195,13 @@ html.lenis body { height: auto; }
     z-index: -1;
   }
 
-  /* Breathing micro-life (#9) — desktop only, subliminal */
+  /* Breathing micro-life (#9) — desktop only, subliminal. The grain + hero
+     glow animations are gated here too: on phones/tablets they stay static,
+     which avoids constant full-screen / large-element repaints. */
   @media (min-width: 1024px) {
-    .cta-breathe { animation: cta-glow 4s ease-in-out infinite; }
+    .cta-breathe    { animation: cta-glow 4s ease-in-out infinite; }
+    .grain-anim     { animation: atelier-grain 0.6s steps(1) infinite; }
+    .hero-glow-anim { animation: glow-pulse 7s ease-in-out infinite; }
   }
   .rule-breathe { animation: rule-breathe 6s ease-in-out infinite; }
 }

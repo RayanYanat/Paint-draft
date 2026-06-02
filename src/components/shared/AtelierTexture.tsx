@@ -15,14 +15,13 @@ export default function AtelierTexture() {
       {/* Paper grain */}
       <div
         aria-hidden
-        className="fixed inset-0 pointer-events-none"
+        className="fixed inset-0 pointer-events-none grain-anim"
         style={{
           zIndex: 9000,
           opacity: 0.07,
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='ag'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23ag)'/%3E%3C/svg%3E\")",
           backgroundSize: "200px 200px",
-          animation: "atelier-grain 0.6s steps(1) infinite",
         }}
       />
 

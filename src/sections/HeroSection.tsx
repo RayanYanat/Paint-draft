@@ -76,12 +76,11 @@ export default function HeroSection({ company }: { company: CompanyData }) {
         />
         <div
           aria-hidden
-          className="absolute pointer-events-none"
+          className="absolute pointer-events-none hero-glow-anim"
           style={{
             left: "50%", top: "62%", width: "760px", height: "520px",
             background: "radial-gradient(ellipse at center, rgba(176,85,47,0.85) 0%, rgba(176,85,47,0.3) 40%, transparent 72%)",
             mixBlendMode: "screen",
-            animation: "glow-pulse 7s ease-in-out infinite",
           }}
         />
       </div>

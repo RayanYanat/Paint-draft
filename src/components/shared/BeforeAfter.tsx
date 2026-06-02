@@ -94,13 +94,21 @@ export default function BeforeAfter({
     };
   }, []);
 
-  /* Enhance with the WebGL liquid reveal — desktop, no reduced-motion, and only
-     when a real "before" photo exists. Otherwise the DOM slider is used as-is. */
+  /* Enhance with the WebGL liquid reveal — desktop, no reduced-motion, a real
+     "before" photo, and only once near the viewport, so below-the-fold
+     before/afters don't spin up a GL context until you approach them. */
   useEffect(() => {
     if (!beforeSrc) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    setTryGl(true);
+    const el = wrapRef.current;
+    if (!el) { setTryGl(true); return; }
+    const io = new IntersectionObserver(
+      (es) => { if (es.some((e) => e.isIntersecting)) { setTryGl(true); io.disconnect(); } },
+      { rootMargin: "300px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, [beforeSrc]);
 
   /* Scroll-in self-demo sweep (teaches the gesture). Yields to user input. */
