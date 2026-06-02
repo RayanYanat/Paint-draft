@@ -237,15 +237,15 @@ html.lenis body { height: auto; }
 .reveal-soft { opacity: 0; transform: translateY(16px); }
 .mask-img    { clip-path: inset(0 0 100% 0); }   /* revealed bottom→top */
 
-/* Hero masthead initial states */
-.mh-line,
+/* Hero masthead initial states — must cover every class HeroSection animates
+   in, or the un-hidden ones (title, sub) flash visible for a frame before GSAP
+   runs and then re-animate. */
 .mh-kicker,
-.mh-title,
-.mh-meta,
-.mh-lede,
+.mh-sub,
 .mh-cta,
 .mh-stage,
 .mh-scroll { opacity: 0; }
+.hero-name .split-word { transform: translateY(110%); }
 
 /* Locked screen initial states */
 .lk-rule,
@@ -257,7 +257,7 @@ html.lenis body { height: auto; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal, .reveal-soft, .mask-img,
-  .mh-line, .mh-kicker, .mh-title, .mh-meta, .mh-lede, .mh-cta, .mh-stage, .mh-scroll,
+  .mh-kicker, .mh-sub, .mh-cta, .mh-stage, .mh-scroll, .hero-name .split-word,
   .lk-rule, .lk-kicker, .lk-meta, .lk-lede, .lk-title {
     opacity: 1 !important;
     transform: none !important;

@@ -124,7 +124,6 @@ export default function BeforeAfter({
   return (
     <div
       ref={wrapRef}
-      data-cursor="Drag"
       className={`relative overflow-hidden select-none cursor-ew-resize bg-paper-deep ${className}`}
       style={{ touchAction: "pan-y" }}
     >
