@@ -23,8 +23,8 @@ export default function ContactSection({ company }: { company: CompanyData }) {
   const [form, setForm] = useState({ name: "", phone: "", need: "", message: "" });
 
   const DETAILS = [
-    { icon: Phone, label: "Phone", value: company.phone, href: `tel:${company.phone}` },
-    { icon: Mail,  label: "Email", value: company.email ?? "—", href: company.email ? `mailto:${company.email}` : null },
+    ...(company.phone ? [{ icon: Phone, label: "Phone", value: company.phone, href: `tel:${company.phone}` }] : []),
+    ...(company.email ? [{ icon: Mail,  label: "Email", value: company.email, href: `mailto:${company.email}` }] : []),
     ...(company.address ? [{ icon: MapPin, label: "Studio", value: company.address, href: `https://maps.google.com/?q=${encodeURIComponent(company.address)}` }] : []),
     { icon: Clock, label: "Hours", value: company.opening_hours ?? "Mon–Sat, 7am–6pm", href: null },
   ];

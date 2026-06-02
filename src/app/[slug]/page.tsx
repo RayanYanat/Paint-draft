@@ -36,16 +36,21 @@ async function getCompany(slug: string): Promise<CompanyData | null> {
 
   if (error || !data) return null;
   const row = data as Omit<CompanyData, "zone">;
-  const city = cleanText(row.city);
+
+  // Scraped lead data is uneven — a row may be missing its city, or (rarely)
+  // its name. Fall back gracefully so a personalized draft never renders a
+  // broken token like "Painters in " or "across  & surrounding areas".
+  const cleanCity = cleanText(row.city);
+  const city = cleanCity || "your area";
   return {
     slug:          cleanText(row.slug),
-    name:          cleanText(row.name),
+    name:          cleanText(row.name) || "Our Painting Studio",
     city,
     phone:         cleanText(row.phone),
     email:         cleanText(row.email),
     address:       cleanText(row.address),
     opening_hours: cleanText(row.opening_hours),
-    zone:          `${city} & surrounding areas`,
+    zone:          cleanCity ? `${cleanCity} & surrounding areas` : "your area",
   };
 }
 
@@ -58,16 +63,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const company  = await getCompany(slug);
 
+  // Personalized drafts carry a prospect's brand name — keep them out of
+  // search indexes (still lets social crawlers read the link unfurl).
+  const robots = { index: false, follow: false };
+
   if (!company) {
     return {
       title:       "Professional Painting Contractor",
       description: "Interior & exterior house painting, cabinet refinishing, and color consultation. Free estimates.",
+      robots,
     };
   }
 
+  const callLine = company.phone ? ` Call ${company.phone}.` : "";
   return {
     title:       `${company.name} — Painters in ${company.city}`,
-    description: `${company.name} — interior & exterior house painting, cabinet refinishing, and color consultation in ${company.city}. Free estimates. Call ${company.phone}.`,
+    description: `${company.name} — interior & exterior house painting, cabinet refinishing, and color consultation in ${company.city}. Free estimates.${callLine}`,
+    robots,
   };
 }
 
