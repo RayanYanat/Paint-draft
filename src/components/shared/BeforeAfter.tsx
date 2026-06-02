@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { MoveHorizontal } from "lucide-react";
+import LiquidReveal from "./LiquidReveal";
 
 /**
  * Before / After reveal — the signature interaction.
@@ -52,6 +53,8 @@ export default function BeforeAfter({
   const posRef    = useRef(50);
   const draggingRef = useRef(false);
   const touchedRef  = useRef(false);
+  const [tryGl, setTryGl]     = useState(false);
+  const [glReady, setGlReady] = useState(false);
 
   const apply = (p: number) => {
     const c = Math.max(0, Math.min(100, p));
@@ -90,6 +93,15 @@ export default function BeforeAfter({
       window.removeEventListener("pointerup", onUp);
     };
   }, []);
+
+  /* Enhance with the WebGL liquid reveal — desktop, no reduced-motion, and only
+     when a real "before" photo exists. Otherwise the DOM slider is used as-is. */
+  useEffect(() => {
+    if (!beforeSrc) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setTryGl(true);
+  }, [beforeSrc]);
 
   /* Scroll-in self-demo sweep (teaches the gesture). Yields to user input. */
   useGSAP(
@@ -136,18 +148,30 @@ export default function BeforeAfter({
         style={{ backgroundColor: "rgba(244,240,232,0.85)", color: "#211C17" }}>
         {afterLabel}
       </span>
+      <span className={`absolute ${labelTop} left-4 z-20 kicker px-2.5 py-1 rounded-sm`}
+        style={{ backgroundColor: "rgba(33,28,23,0.6)", color: "#F4F0E8" }}>
+        {beforeLabel}
+      </span>
 
-      {/* BEFORE — dull, clipped */}
+      {/* BEFORE — dull, clipped (DOM fallback; covered by the WebGL canvas when active) */}
       <div ref={beforeRef} className="absolute inset-0 z-10" style={{ clipPath: "inset(0 50% 0 0)" }}>
         <Image src={beforeSrc ?? src} alt="" fill sizes={sizes} className="object-cover" style={{ filter: beforeSrc ? undefined : beforeFilter }} />
         {/* aged / yellowed-wall cast */}
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "linear-gradient(135deg, rgba(139,119,90,0.18) 0%, rgba(90,75,58,0.12) 100%)" }} />
-        <span className={`absolute ${labelTop} left-4 kicker px-2.5 py-1 rounded-sm`}
-          style={{ backgroundColor: "rgba(33,28,23,0.6)", color: "#F4F0E8" }}>
-          {beforeLabel}
-        </span>
       </div>
+
+      {/* WebGL liquid reveal — covers the two DOM images once ready (z above
+          them, below the overlay/labels/handle). Stays transparent on failure. */}
+      {tryGl && beforeSrc && (
+        <LiquidReveal
+          beforeSrc={beforeSrc}
+          afterSrc={src}
+          getProgress={() => posRef.current}
+          onReady={() => setGlReady(true)}
+          className="absolute inset-0 z-[11]"
+        />
+      )}
 
       {/* Dark legibility overlay (hero full-bleed) */}
       {overlay && (
@@ -157,8 +181,8 @@ export default function BeforeAfter({
 
       {/* Divider + handle */}
       <div ref={handleRef} className="absolute top-0 bottom-0 z-30 pointer-events-none" style={{ left: "50%" }}>
-        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5"
-          style={{ backgroundColor: "rgba(244,240,232,0.92)", boxShadow: "0 0 0 1px rgba(33,28,23,0.18)" }} />
+        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 transition-opacity duration-500"
+          style={{ backgroundColor: "rgba(244,240,232,0.92)", boxShadow: "0 0 0 1px rgba(33,28,23,0.18)", opacity: glReady ? 0 : 1 }} />
         <div
           ref={knobRef}
           role="slider"
