@@ -11,10 +11,11 @@ import type { CompanyData } from "@/lib/types";
 const FIGS = [
   { kind: "photo", type: "Interior",            img: "/work-interior.webp", cls: "lg:col-span-7",                        aspect: "aspect-[4/3]" },
   { kind: "photo", type: "Cabinet Refinishing", img: "/work-cabinet.webp", cls: "lg:col-span-5 lg:mt-24",               aspect: "aspect-[4/5]" },
-  { kind: "ba",    type: "Before / After",      img: "/work-after.webp", cls: "lg:col-span-12",                       aspect: "aspect-[16/10] sm:aspect-[2/1]" },
+  { kind: "ba",    type: "Before / After",      img: "/work-after.webp", beforeImg: "/work-before.webp", cls: "lg:col-span-12",                       aspect: "aspect-[16/10] sm:aspect-[2/1]" },
   { kind: "photo", type: "Supplies",            img: "/work-supplies.webp", cls: "sm:col-span-6 lg:col-span-4",        aspect: "aspect-[3/4]" },
   { kind: "photo", type: "At Work",             img: "/work-atwork.webp", cls: "sm:col-span-6 lg:col-span-4 lg:mt-16", aspect: "aspect-[3/4]" },
   { kind: "photo", type: "Exterior",            img: "/work-exterior.webp", cls: "sm:col-span-6 lg:col-span-4",        aspect: "aspect-[3/4]" },
+  { kind: "ba",    type: "Before / After",      img: "/work-ba2-after.webp", beforeImg: "/work-ba2-before.webp", cls: "lg:col-span-12",                       aspect: "aspect-[16/10] sm:aspect-[2/1]" },
 ] as const;
 
 export default function WorkSection({ company }: { company: CompanyData }) {
@@ -116,7 +117,7 @@ export default function WorkSection({ company }: { company: CompanyData }) {
               {f.kind === "ba" ? (
                 <BeforeAfter
                   src={f.img}
-                  beforeSrc="/work-before.webp"
+                  beforeSrc={f.beforeImg}
                   alt={`Before and after — ${company.name}, ${company.city}`}
                   className={`w-full ${f.aspect} rounded-sm frame-shadow`}
                   sizes="(max-width: 1024px) 100vw, 88rem"
