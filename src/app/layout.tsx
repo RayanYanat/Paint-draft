@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
+import AtelierTexture from "@/components/shared/AtelierTexture";
+import AtelierCursor from "@/components/shared/AtelierCursor";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
 });
 
 const inter = Inter({
@@ -14,16 +17,10 @@ const inter = Inter({
   weight: ["400", "500", "600"],
 });
 
-const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
 export const metadata: Metadata = {
-  title: "[COMPANY NAME] — Professional Painting Contractor",
+  title: "[COMPANY NAME] — Painting Atelier",
   description:
-    "Licensed painting contractor. Interior & exterior residential and commercial painting. Free estimates.",
+    "Interior & exterior house painting, cabinet refinishing, and color consultation. A craftsman's finish, free estimates.",
 };
 
 export default function RootLayout({
@@ -32,12 +29,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${dmSans.variable} ${inter.variable} ${jetbrains.variable} h-full`}
-    >
+    <html lang="en" className={`${playfair.variable} ${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
         {children}
+        <AtelierCursor />
+        <AtelierTexture />
       </body>
     </html>
   );

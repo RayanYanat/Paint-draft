@@ -1,17 +1,22 @@
 import { notFound }   from "next/navigation";
 import type { Metadata } from "next";
 import { getSupabase } from "@/lib/supabase";
+import { cleanText } from "@/lib/utils";
 import type { CompanyData } from "@/lib/types";
 
-import VisitTracker     from "@/components/shared/VisitTracker";
-import GSAPConfig       from "@/components/shared/GSAPConfig";
-import Navbar           from "@/components/layout/Navbar";
-import Footer           from "@/components/layout/Footer";
-import HeroSection      from "@/sections/HeroSection";
-import ServicesSection  from "@/sections/ServicesSection";
-import WorkSection      from "@/sections/WorkSection";
-import ReviewsSection   from "@/sections/ReviewsSection";
-import ContactSection   from "@/sections/ContactSection";
+import VisitTracker    from "@/components/shared/VisitTracker";
+import GSAPConfig      from "@/components/shared/GSAPConfig";
+import PigmentCanvas   from "@/components/shared/PigmentCanvas";
+import PaletteNarrative from "@/components/shared/PaletteNarrative";
+import Navbar          from "@/components/layout/Navbar";
+import Footer          from "@/components/layout/Footer";
+import HeroSection     from "@/sections/HeroSection";
+import ServicesSection from "@/sections/ServicesSection";
+import StatsSection    from "@/sections/StatsSection";
+import WorkSection     from "@/sections/WorkSection";
+import ProcessSection  from "@/sections/ProcessSection";
+import ReviewsSection  from "@/sections/ReviewsSection";
+import ContactSection  from "@/sections/ContactSection";
 
 /* ── ISR config ────────────────────────────────────────────────────────── */
 export const dynamicParams = true;
@@ -31,7 +36,17 @@ async function getCompany(slug: string): Promise<CompanyData | null> {
 
   if (error || !data) return null;
   const row = data as Omit<CompanyData, "zone">;
-  return { ...row, zone: `${row.city} & surrounding areas` };
+  const city = cleanText(row.city);
+  return {
+    slug:          cleanText(row.slug),
+    name:          cleanText(row.name),
+    city,
+    phone:         cleanText(row.phone),
+    email:         cleanText(row.email),
+    address:       cleanText(row.address),
+    opening_hours: cleanText(row.opening_hours),
+    zone:          `${city} & surrounding areas`,
+  };
 }
 
 /* ── Dynamic metadata ─────────────────────────────────────────────────── */
@@ -46,13 +61,13 @@ export async function generateMetadata({
   if (!company) {
     return {
       title:       "Professional Painting Contractor",
-      description: "Licensed painting contractor. Interior & exterior. Free estimates.",
+      description: "Interior & exterior house painting, cabinet refinishing, and color consultation. Free estimates.",
     };
   }
 
   return {
-    title:       `${company.name} — Professional Painters in ${company.city}`,
-    description: `${company.name} — Licensed painting contractor in ${company.city}. Interior & exterior residential and commercial painting. Free estimates. Call ${company.phone}.`,
+    title:       `${company.name} — Painters in ${company.city}`,
+    description: `${company.name} — interior & exterior house painting, cabinet refinishing, and color consultation in ${company.city}. Free estimates. Call ${company.phone}.`,
   };
 }
 
@@ -70,16 +85,20 @@ export default async function SlugPage({
   return (
     <>
       <VisitTracker slug={slug} />
+      <PigmentCanvas />
       <Navbar company={company} />
 
-      <main style={{ position: "relative", zIndex: 1 }}>
+      <main className="relative z-[1]">
         <GSAPConfig />
-        <HeroSection      company={company} />
-        <ServicesSection  company={company} />
-        <WorkSection      company={company} />
-        <ReviewsSection   company={company} />
-        <ContactSection   company={company} />
-        <Footer           company={company} />
+        <PaletteNarrative />
+        <HeroSection     company={company} />
+        <ServicesSection company={company} />
+        <StatsSection    company={company} />
+        <WorkSection     company={company} />
+        <ProcessSection />
+        <ReviewsSection  company={company} />
+        <ContactSection  company={company} />
+        <Footer          company={company} />
       </main>
     </>
   );

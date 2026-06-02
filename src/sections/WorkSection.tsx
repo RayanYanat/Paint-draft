@@ -1,92 +1,138 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import Image from "next/image";
+import BeforeAfter from "@/components/shared/BeforeAfter";
+import SplitWords from "@/components/shared/SplitWords";
 import type { CompanyData } from "@/lib/types";
 
-const PROJECTS = [
-  {
-    title: "Living Room Transformation",
-    type: "Interior",
-    image: "https://images.unsplash.com/photo-1562663474-6cbb3eaa4d14?w=600&h=400&fit=crop",
-  },
-  {
-    title: "Full Exterior Repaint",
-    type: "Exterior",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop",
-  },
-  {
-    title: "Kitchen Cabinet Refinish",
-    type: "Cabinets",
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop",
-  },
-  {
-    title: "Office Space Refresh",
-    type: "Commercial",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop",
-  },
-];
+const FIGS = [
+  { kind: "photo", type: "Interior",            img: "/work-interior.jpg", cls: "lg:col-span-7",                        aspect: "aspect-[4/3]" },
+  { kind: "photo", type: "Cabinet Refinishing", img: "/work-cabinet.jpg", cls: "lg:col-span-5 lg:mt-24",               aspect: "aspect-[4/5]" },
+  { kind: "ba",    type: "Before / After",      img: "/work-after.jpg", cls: "lg:col-span-12",                       aspect: "aspect-[16/10] sm:aspect-[2/1]" },
+  { kind: "photo", type: "Supplies",            img: "/work-supplies.jpg", cls: "sm:col-span-6 lg:col-span-4",        aspect: "aspect-[3/4]" },
+  { kind: "photo", type: "At Work",             img: "/work-atwork.jpg", cls: "sm:col-span-6 lg:col-span-4 lg:mt-16", aspect: "aspect-[3/4]" },
+  { kind: "photo", type: "Exterior",            img: "/work-exterior.jpg", cls: "sm:col-span-6 lg:col-span-4",        aspect: "aspect-[3/4]" },
+] as const;
 
 export default function WorkSection({ company }: { company: CompanyData }) {
   const ref = useRef<HTMLElement>(null);
 
-  useGSAP(() => {
-    gsap.registerPlugin(ScrollTrigger);
+  useGSAP(
+    () => {
+      gsap.registerPlugin(ScrollTrigger);
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    gsap.from(".work-card", {
-      scrollTrigger: {
-        trigger: ref.current,
-        start: "top 75%",
-      },
-      y: 50,
-      opacity: 0,
-      duration: 0.7,
-      stagger: 0.15,
-      ease: "power3.out",
+      if (reduce) {
+        gsap.set(".work-head, .work-fig", { opacity: 1, scale: 1, rotation: 0 });
+        gsap.set(".work-head .split-word", { yPercent: 0 });
+        return;
+      }
+
+      gsap.set(".work-head", { opacity: 0 });
+      gsap.set(".work-head .split-word", { yPercent: 100 });
+      // Entrance uses scale + rotationZ only — y is reserved for column parallax
+      gsap.set(".work-fig", {
+        opacity: 0, scale: 0.96,
+        rotation: (i) => (i % 2 === 1 ? -1 : 0),
+        transformOrigin: "center center",
+      });
+
+      ScrollTrigger.create({
+        trigger: ref.current, start: "top 75%", once: true,
+        onEnter: () => {
+          gsap.timeline({ defaults: { ease: "power3.out" } })
+            .to(".work-head", { opacity: 1, duration: 0.5 })
+            .to(".work-head .split-word", { yPercent: 0, duration: 0.7, stagger: 0.04, ease: "power4.out" }, "-=0.2");
+        },
+      });
+
+      ScrollTrigger.batch(".work-fig", {
+        start: "top 88%",
+        onEnter: (els) => gsap.to(els, {
+          opacity: 1, scale: 1, rotation: 0,
+          duration: 0.9, stagger: 0.12, ease: "power3.out",
+        }),
+      });
+
+      // Bottom-row column parallax — col1 rises, col3 sinks (desktop only)
+      if (window.innerWidth >= 1024) {
+        const figs = gsap.utils.toArray<HTMLElement>(".work-fig");
+        const st = { trigger: ref.current, start: "top bottom", end: "bottom top", scrub: 1.5 };
+        if (figs[3]) gsap.to(figs[3], { y: -60, ease: "none", scrollTrigger: st });
+        if (figs[5]) gsap.to(figs[5], { y: 40,  ease: "none", scrollTrigger: st });
+      }
+    },
+    { scope: ref }
+  );
+
+  /* 3D hover tilt on photo figures — desktop / fine pointer, custom listeners */
+  useEffect(() => {
+    if (window.innerWidth < 1024) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tiles = Array.from(ref.current?.querySelectorAll<HTMLElement>(".work-tilt") ?? []);
+    const cleanups: Array<() => void> = [];
+    tiles.forEach((el) => {
+      const onMove = (e: MouseEvent) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        gsap.to(el, { rotateY: x * 6, rotateX: -y * 6, duration: 0.6, ease: "power2.out" });
+      };
+      const onLeave = () => gsap.to(el, { rotateY: 0, rotateX: 0, duration: 0.8, ease: "power2.out" });
+      el.addEventListener("mousemove", onMove);
+      el.addEventListener("mouseleave", onLeave);
+      cleanups.push(() => { el.removeEventListener("mousemove", onMove); el.removeEventListener("mouseleave", onLeave); });
     });
-  }, { scope: ref });
+    return () => cleanups.forEach((c) => c());
+  }, []);
 
   return (
-    <section ref={ref} id="work" className="section-padding bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={ref} id="work" className="section-pad bg-paper fade-to-deep">
+      <div className="max-w-[92rem] mx-auto px-5 lg:px-10">
+
         {/* Header */}
-        <div className="text-center mb-16">
-          <span className="font-data text-[10px] tracking-[0.3em] uppercase text-brand/50 block mb-4">
-            Our Work
-          </span>
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Recent Projects
-          </h2>
-          <p className="text-white/40 max-w-xl mx-auto text-sm sm:text-base">
-            A selection of recent painting projects completed in {company.zone}.
+        <div className="work-head flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14 lg:mb-20">
+          <div className="max-w-xl">
+            <span className="kicker block mb-5">Selected Work</span>
+            <h2 className="font-display text-ink font-medium" style={{ fontSize: "clamp(2.1rem, 4.5vw, 3.8rem)", lineHeight: 1.04 }}>
+              <SplitWords text="A few rooms we've" />
+              <br /><span className="italic"><SplitWords text="stood back from." /></span>
+            </h2>
+          </div>
+          <p className="text-ink-soft leading-relaxed max-w-xs lg:text-right" style={{ fontSize: "0.95rem" }}>
+            Recent interior, exterior, and cabinet projects across {company.zone}.
+            Drag the middle figure to see a transformation.
           </p>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {PROJECTS.map((project) => (
-            <div
-              key={project.title}
-              className="work-card group relative overflow-hidden rounded-xl border border-subtle"
-            >
-              <div className="aspect-[3/2] overflow-hidden">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        {/* Editorial photo-essay grid */}
+        <div className="grid grid-cols-12 gap-x-5 lg:gap-x-6 gap-y-12 lg:gap-y-24">
+          {FIGS.map((f, i) => (
+            <figure key={i} className={`work-fig col-span-12 ${f.cls}`} style={f.kind === "photo" ? { perspective: "800px" } : undefined}>
+              {f.kind === "ba" ? (
+                <BeforeAfter
+                  src={f.img}
+                  beforeSrc="/work-before.jpg"
+                  alt={`Before and after — ${company.name}, ${company.city}`}
+                  className={`w-full ${f.aspect} rounded-sm frame-shadow`}
+                  sizes="(max-width: 1024px) 100vw, 88rem"
                 />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <span className="font-data text-[10px] tracking-[0.2em] uppercase text-brand/70 block mb-1">
-                  {project.type}
-                </span>
-                <h3 className="font-heading text-lg font-bold text-white">
-                  {project.title}
-                </h3>
-              </div>
-            </div>
+              ) : (
+                <div className={`work-tilt group relative w-full ${f.aspect} rounded-sm overflow-hidden bg-paper-deep frame-shadow`} style={{ transformStyle: "preserve-3d" }}>
+                  <Image src={f.img} alt={`${f.type} project in ${company.city}`} fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover" />
+                </div>
+              )}
+              <figcaption className="flex items-center justify-between gap-4 mt-3">
+                <span className="kicker">Fig. {String(i + 1).padStart(2, "0")} — {f.type}</span>
+                <span className="kicker" style={{ color: "rgba(107,98,88,0.7)" }}>{company.city}</span>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </div>
