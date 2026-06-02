@@ -123,10 +123,10 @@ export default function WorkSection({ company }: { company: CompanyData }) {
                   sizes="(max-width: 1024px) 100vw, 88rem"
                 />
               ) : (
-                <div className={`work-tilt group relative w-full ${f.aspect} rounded-sm overflow-hidden bg-paper-deep frame-shadow`} style={{ transformStyle: "preserve-3d" }}>
+                <div data-cursor="View" className={`work-tilt group relative w-full ${f.aspect} rounded-sm overflow-hidden bg-paper-deep frame-shadow`} style={{ transformStyle: "preserve-3d" }}>
                   <Image src={f.img} alt={`${f.type} project in ${company.city}`} fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover" />
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]" />
                 </div>
               )}
               <figcaption className="flex items-center justify-between gap-4 mt-3">
