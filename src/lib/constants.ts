@@ -6,37 +6,37 @@ export const SERVICES = [
     num: "01",
     title: "Interior Painting",
     blurb: "Walls, ceilings, trim, and feature details — crisp lines and a finish that reads flawless up close.",
-    img: "/svc-interior.jpg",
+    img: "/svc-interior.webp",
   },
   {
     num: "02",
     title: "Exterior Painting",
     blurb: "Siding, stucco, trim, and doors — coatings chosen to hold their color through every season.",
-    img: "/svc-exterior.jpg",
+    img: "/svc-exterior.webp",
   },
   {
     num: "03",
     title: "Cabinet Refinishing",
     blurb: "Kitchens and built-ins, stripped and sprayed to a smooth, durable, factory-grade surface.",
-    img: "/svc-cabinet.jpg",
+    img: "/svc-cabinet.webp",
   },
   {
     num: "04",
     title: "Color Consultation",
     blurb: "A guided palette session — light, undertones, and mood considered before a single coat goes on.",
-    img: "/svc-color.jpg",
+    img: "/svc-color.webp",
   },
   {
     num: "05",
     title: "Commercial Painting",
     blurb: "Offices, retail, and tenant spaces — scheduled around your hours, finished without the disruption.",
-    img: "/svc-commercial.jpg",
+    img: "/svc-commercial.webp",
   },
   {
     num: "06",
     title: "Surface Prep & Drywall",
     blurb: "Patching, skim-coating, and sanding — the unseen craft that makes the finished wall look effortless.",
-    img: "/svc-prep.jpg",
+    img: "/svc-prep.webp",
   },
 ];
 

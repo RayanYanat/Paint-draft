@@ -8,8 +8,8 @@ import SplitWords from "@/components/shared/SplitWords";
 import MagneticButton from "@/components/shared/MagneticButton";
 import type { CompanyData } from "@/lib/types";
 
-const HERO_AFTER  = "/hero-after.png";   // same house, freshly painted blue
-const HERO_BEFORE = "/hero-before.png";  // same house, faded/unpainted — true matched pair
+const HERO_AFTER  = "/hero-after.webp";   // same house, freshly painted blue
+const HERO_BEFORE = "/hero-before.webp";  // same house, faded/unpainted — true matched pair
 
 export default function HeroSection({ company }: { company: CompanyData }) {
   const ref = useRef<HTMLElement>(null);
