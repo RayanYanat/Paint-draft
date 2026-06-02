@@ -221,7 +221,9 @@ export default function LiquidReveal({ beforeSrc, afterSrc, getProgress, onReady
       ref={canvasRef}
       aria-hidden
       className={className}
-      style={{ opacity: 0, transition: "opacity 0.6s ease", display: "block" }}
+      // canvas is a replaced element — `absolute inset-0` alone keeps its
+      // intrinsic 300x150 size, so it must be stretched explicitly.
+      style={{ opacity: 0, transition: "opacity 0.6s ease", display: "block", width: "100%", height: "100%" }}
     />
   );
 }
