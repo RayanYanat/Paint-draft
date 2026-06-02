@@ -148,7 +148,7 @@ export default function ContactSection({ company }: { company: CompanyData }) {
                 <div className="ct-row">
                   <label className="kicker block mb-2.5" style={{ color: "rgba(107,98,88,0.9)" }}>Project</label>
                   <div className="relative">
-                    <select required value={form.need}
+                    <select required aria-label="Project" value={form.need}
                       onChange={(e) => setForm({ ...form, need: e.target.value })}
                       onFocus={onFocus} onBlur={onBlur}
                       className="w-full appearance-none text-sm px-4 py-3.5 rounded-sm outline-none cursor-pointer transition-all duration-200"

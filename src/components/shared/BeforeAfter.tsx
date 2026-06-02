@@ -163,7 +163,7 @@ export default function BeforeAfter({
 
       {/* BEFORE — dull, clipped (DOM fallback; covered by the WebGL canvas when active) */}
       <div ref={beforeRef} className="absolute inset-0 z-10" style={{ clipPath: "inset(0 50% 0 0)" }}>
-        <Image src={beforeSrc ?? src} alt="" fill sizes={sizes} className="object-cover" style={{ filter: beforeSrc ? undefined : beforeFilter }} />
+        <Image src={beforeSrc ?? src} alt="" fill priority={priority} sizes={sizes} className="object-cover" style={{ filter: beforeSrc ? undefined : beforeFilter }} />
         {/* aged / yellowed-wall cast */}
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "linear-gradient(135deg, rgba(139,119,90,0.18) 0%, rgba(90,75,58,0.12) 100%)" }} />
