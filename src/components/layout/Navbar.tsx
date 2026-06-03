@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Phone, Menu, X } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import MagneticButton from "@/components/shared/MagneticButton";
@@ -9,6 +9,7 @@ export default function Navbar({ company }: { company: CompanyData }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("");
+  const wordmarkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -38,6 +39,36 @@ export default function Navbar({ company }: { company: CompanyData }) {
     return () => observer.disconnect();
   }, []);
 
+  /* Wordmark auto-fit — the prospect's full name is part of the personalization,
+     so we never truncate it. Shrink the font only as much as needed for the
+     whole name to sit on one line at the largest possible size (short names stay
+     big); an extreme name drops to a floor and wraps. Refits on resize + once
+     the display font has loaded (Playfair changes the measured width). */
+  useEffect(() => {
+    const el = wordmarkRef.current;
+    if (!el) return;
+    const fit = () => {
+      el.style.fontSize = "";
+      el.style.whiteSpace = "nowrap";
+      const avail = el.clientWidth;
+      const full = el.scrollWidth;
+      if (full <= avail + 1) return;            // fits at base size — done
+      const base = parseFloat(getComputedStyle(el).fontSize);
+      const next = (base * avail) / full;
+      const FLOOR = 15;
+      if (next >= FLOOR) {
+        el.style.fontSize = `${next}px`;        // one line, shrunk to fit
+      } else {
+        el.style.fontSize = `${FLOOR}px`;       // floor reached → allow 2 lines
+        el.style.whiteSpace = "normal";
+      }
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    if (document.fonts?.ready) document.fonts.ready.then(fit).catch(() => {});
+    return () => window.removeEventListener("resize", fit);
+  }, [company.name]);
+
   /* Over the dark full-bleed hero (not scrolled) → white. Scrolled → paper + ink. */
   const onDark      = !scrolled;
   const strong      = onDark ? "#FFFFFF" : "#211C17";
@@ -57,8 +88,9 @@ export default function Navbar({ company }: { company: CompanyData }) {
       <div className="max-w-[92rem] mx-auto px-5 lg:px-10 h-[68px] lg:h-[76px] flex items-center justify-between gap-8">
 
         {/* Wordmark */}
-        <a href="#" className="font-display font-semibold leading-none truncate min-w-0 max-w-[55%] lg:max-w-[26rem] transition-colors duration-300"
-          style={{ fontSize: "1.3rem", letterSpacing: "-0.01em", color: strong }}>
+        <a ref={wordmarkRef} href="#"
+          className="font-display font-semibold leading-[1.05] min-w-0 max-w-[68%] lg:max-w-[30rem] text-[1.3rem] transition-colors duration-300"
+          style={{ letterSpacing: "-0.01em", color: strong }}>
           {company.name}
         </a>
 
