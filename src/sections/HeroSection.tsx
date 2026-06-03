@@ -33,13 +33,30 @@ export default function HeroSection({ company }: { company: CompanyData }) {
       gsap.set(".mh-cta",    { opacity: 0, y: 16 });
       gsap.set(".mh-scroll", { opacity: 0 });
 
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.to(".mh-stage",  { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" })
-        .to(".mh-kicker", { opacity: 1, y: 0, duration: 0.5 }, "-=0.5")
-        .to(".hero-name .split-word", { yPercent: 0, duration: 0.9, stagger: 0.08, ease: "power4.out" }, "-=0.25")
-        .to(".mh-sub",    { opacity: 1, duration: 0.6 }, "-=0.4")
-        .to(".mh-cta",    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, "-=0.3")
-        .to(".mh-scroll", { opacity: 1, duration: 0.6 }, "-=0.1");
+      // Hold the opener until BOTH hero photos are decoded — otherwise the
+      // before/after flashes the vibrant "after" through the not-yet-painted
+      // "before" for a beat. Fallback timer so a stalled decode never blocks it.
+      let played = false;
+      const play = () => {
+        if (played || !ref.current) return;
+        played = true;
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.to(".mh-stage",  { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" })
+          .to(".mh-kicker", { opacity: 1, y: 0, duration: 0.5 }, "-=0.5")
+          .to(".hero-name .split-word", { yPercent: 0, duration: 0.9, stagger: 0.08, ease: "power4.out" }, "-=0.25")
+          .to(".mh-sub",    { opacity: 1, duration: 0.6 }, "-=0.4")
+          .to(".mh-cta",    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, "-=0.3")
+          .to(".mh-scroll", { opacity: 1, duration: 0.6 }, "-=0.1");
+      };
+
+      Promise.all(
+        [HERO_AFTER, HERO_BEFORE].map((s) => {
+          const img = new window.Image();
+          img.src = s;
+          return img.decode().catch(() => {});
+        })
+      ).then(play);
+      gsap.delayedCall(0.8, play);
     },
     { scope: ref }
   );

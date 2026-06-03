@@ -161,8 +161,11 @@ export default function BeforeAfter({
         {beforeLabel}
       </span>
 
-      {/* BEFORE — dull, clipped (DOM fallback; covered by the WebGL canvas when active) */}
-      <div ref={beforeRef} className="absolute inset-0 z-10" style={{ clipPath: "inset(0 50% 0 0)" }}>
+      {/* BEFORE — dull, clipped (DOM fallback; covered by the WebGL canvas when active).
+          The dull placeholder colour means that while the "before" photo is still
+          decoding, its region shows a neutral tone instead of letting the vibrant
+          "after" beneath bleed through. */}
+      <div ref={beforeRef} className="absolute inset-0 z-10" style={{ clipPath: "inset(0 50% 0 0)", backgroundColor: "#6b6258" }}>
         <Image src={beforeSrc ?? src} alt="" fill priority={priority} sizes={sizes} className="object-cover" style={{ filter: beforeSrc ? undefined : beforeFilter }} />
         {/* aged / yellowed-wall cast */}
         <div className="absolute inset-0 pointer-events-none"
