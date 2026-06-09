@@ -5,6 +5,7 @@ import { cleanText } from "@/lib/utils";
 import type { CompanyData } from "@/lib/types";
 
 import VisitTracker    from "@/components/shared/VisitTracker";
+import ConceptBanner   from "@/components/shared/ConceptBanner";
 import GSAPConfig      from "@/components/shared/GSAPConfig";
 import PigmentCanvas   from "@/components/shared/PigmentCanvas";
 import PaletteNarrative from "@/components/shared/PaletteNarrative";
@@ -112,6 +113,8 @@ export default async function SlugPage({
         <ContactSection  company={company} />
         <Footer          company={company} />
       </main>
+
+      <ConceptBanner name={company.name} />
     </>
   );
 }
