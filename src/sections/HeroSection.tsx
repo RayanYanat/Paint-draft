@@ -76,7 +76,8 @@ export default function HeroSection({ company }: { company: CompanyData }) {
   }, []);
 
   return (
-    <section ref={ref} className="relative w-full overflow-hidden" style={{ height: "100svh", minHeight: "600px" }}>
+    <section ref={ref}
+      className="relative w-full overflow-hidden h-[64svh] min-h-[460px] max-h-[560px] lg:h-[100svh] lg:min-h-[600px] lg:max-h-none">
 
       {/* Layer 1 — full-bleed before/after + warm glow */}
       <div ref={layer1Ref} className="mh-stage absolute inset-0 will-change-transform">
