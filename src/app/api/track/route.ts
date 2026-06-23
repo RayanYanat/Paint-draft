@@ -57,12 +57,16 @@ export async function POST(req: NextRequest) {
       } catch {}
     }
 
-    /* ── Classify: scanner vs human ───────────────────────────────────── */
+    /* ── Classify ──────────────────────────────────────────────────────────
+       Filter scanners by BEHAVIOUR (the engagement gate), not by IP. The old
+       hosting/org checks also flagged real visitors on corporate, VPN or some
+       residential/mobile networks — the exact people we want to hear about.
+       hosting/dcOrg are still recorded for context but no longer block. */
     const uaBot     = UA_BOT.test(ua) || ua.trim() === "";
     const clientBot = signals.wd === true || (signals.langs === 0 && (signals.cores ?? 0) === 0);
     const dcOrg     = ORG_DC.test(org);
-    const isScanner = uaBot || clientBot || hosting || dcOrg;
-    const reason    = uaBot ? "UA" : (hosting || dcOrg) ? "datacenter" : clientBot ? "automation" : "";
+    const isScanner = uaBot || clientBot;
+    const reason    = uaBot ? "UA" : clientBot ? "automation" : (hosting || dcOrg) ? "datacenter" : "";
 
     const supabase = getSupabase();
     const { data: lead } = await supabase.from("leads").select("*").eq("slug", slug).single();
