@@ -17,7 +17,7 @@ import StatsSection    from "@/sections/StatsSection";
 import WorkSection     from "@/sections/WorkSection";
 import ProcessSection  from "@/sections/ProcessSection";
 import ReviewsSection  from "@/sections/ReviewsSection";
-import ContactSection  from "@/sections/ContactSection";
+import EstimateSection from "@/sections/EstimateSection";
 
 /* ── ISR config ────────────────────────────────────────────────────────── */
 export const dynamicParams = true;
@@ -31,7 +31,7 @@ export async function generateStaticParams() {
 async function getCompany(slug: string): Promise<CompanyData | null> {
   const { data, error } = await getSupabase()
     .from("leads")
-    .select("slug, name, city, phone, email, address, opening_hours")
+    .select("slug, name, city, phone, email, address, opening_hours, category")
     .eq("slug", slug)
     .single();
 
@@ -51,6 +51,7 @@ async function getCompany(slug: string): Promise<CompanyData | null> {
     email:         cleanText(row.email),
     address:       cleanText(row.address),
     opening_hours: cleanText(row.opening_hours),
+    category:      row.category ?? null,
     zone:          cleanCity ? `${cleanCity} & surrounding areas` : "your area",
   };
 }
@@ -110,7 +111,7 @@ export default async function SlugPage({
         <WorkSection     company={company} />
         <ProcessSection />
         <ReviewsSection  company={company} />
-        <ContactSection  company={company} />
+        <EstimateSection company={company} />
         <Footer          company={company} />
       </main>
 

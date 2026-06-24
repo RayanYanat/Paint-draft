@@ -7,12 +7,14 @@ import BeforeAfter from "@/components/shared/BeforeAfter";
 import SplitWords from "@/components/shared/SplitWords";
 import MagneticButton from "@/components/shared/MagneticButton";
 import type { CompanyData } from "@/lib/types";
+import { getNiche } from "@/lib/niche";
 
 const HERO_AFTER  = "/hero-after.webp";   // same house, freshly painted blue
 const HERO_BEFORE = "/hero-before.webp";  // same house, faded/unpainted — true matched pair
 
 export default function HeroSection({ company }: { company: CompanyData }) {
   const ref = useRef<HTMLElement>(null);
+  const niche = getNiche(company.category);
   const layer1Ref = useRef<HTMLDivElement>(null); // slider — moves opposite cursor
   const layer2Ref = useRef<HTMLDivElement>(null); // text — moves with cursor
 
@@ -118,13 +120,13 @@ export default function HeroSection({ company }: { company: CompanyData }) {
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-4 mt-8 pointer-events-auto">
             <MagneticButton
-              href="#contact"
+              href="#book"
               className="mh-cta inline-flex items-center px-8 py-4 text-sm font-medium tracking-wide rounded-sm backdrop-blur-sm transition-colors duration-300"
               style={{ backgroundColor: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.25)")}
               onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.15)")}
             >
-              Request an estimate
+              {niche.bookingCta}
             </MagneticButton>
             {company.phone && (
               <a href={`tel:${company.phone}`}
