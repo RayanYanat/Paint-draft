@@ -59,7 +59,7 @@ export default function ConceptBanner({ name }: { name: string }) {
               A design draft · for {name}
             </p>
             <p className="mt-1 leading-snug" style={{ fontSize: "12.5px", color: "#211C17" }}>
-              Fully mobile-ready. Your services, branding and photos come in the final build.
+              Fully mobile-ready, with free estimates and online booking built in. Your services, branding and photos come in the final build.
             </p>
           </div>
 
