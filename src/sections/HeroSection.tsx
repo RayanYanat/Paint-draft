@@ -7,14 +7,14 @@ import BeforeAfter from "@/components/shared/BeforeAfter";
 import SplitWords from "@/components/shared/SplitWords";
 import MagneticButton from "@/components/shared/MagneticButton";
 import type { CompanyData } from "@/lib/types";
-import { getNiche } from "@/lib/niche";
+import { getTemplateNiche } from "@/lib/niche";
 
 const HERO_AFTER  = "/hero-after.webp";   // same house, freshly painted blue
 const HERO_BEFORE = "/hero-before.webp";  // same house, faded/unpainted — true matched pair
 
 export default function HeroSection({ company }: { company: CompanyData }) {
   const ref = useRef<HTMLElement>(null);
-  const niche = getNiche(company.category);
+  const niche = getTemplateNiche();
   const layer1Ref = useRef<HTMLDivElement>(null); // slider — moves opposite cursor
   const layer2Ref = useRef<HTMLDivElement>(null); // text — moves with cursor
 

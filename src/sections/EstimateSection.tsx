@@ -5,7 +5,7 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { Phone, Mail, MapPin, Clock, FileText, CalendarDays } from "lucide-react";
 import type { CompanyData } from "@/lib/types";
-import { getNiche } from "@/lib/niche";
+import { getTemplateNiche } from "@/lib/niche";
 import EstimateForm from "@/components/conversion/EstimateForm";
 import BookingEmbed from "@/components/conversion/BookingEmbed";
 
@@ -16,7 +16,7 @@ const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK ?? "your-cal-username/estimate
 
 export default function EstimateSection({ company }: { company: CompanyData }) {
   const ref = useRef<HTMLElement>(null);
-  const niche = getNiche(company.category);
+  const niche = getTemplateNiche();
   const [tab, setTab] = useState<"form" | "booking">("form");
 
   /* Open the booking tab when a "#book" CTA is used. The smooth-scroll handler

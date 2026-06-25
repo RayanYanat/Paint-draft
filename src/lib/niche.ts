@@ -222,3 +222,9 @@ export const NICHE_CONFIG: Record<NicheKey, NicheConfig> = {
 export function getNiche(category: string | null | undefined): NicheConfig {
   return NICHE_CONFIG[resolveNiche(category)];
 }
+
+/* This template is single-niche by design — its visuals are fixed, so the
+   conversion features lock to the template's niche regardless of a lead's
+   scraped category (which stays a fallback only, e.g. for shared components). */
+export const TEMPLATE_NICHE: NicheKey = "painter";
+export const getTemplateNiche = (): NicheConfig => NICHE_CONFIG[TEMPLATE_NICHE];
