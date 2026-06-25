@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 
-/* The OWNER's sales-call calendar (a distinct Cal event from the demo's
-   customer booking). Set NEXT_PUBLIC_OWNER_CAL_LINK to "username/event-slug". */
-const OWNER_CAL = process.env.NEXT_PUBLIC_OWNER_CAL_LINK ?? "your-cal-username/get-your-site";
+/* Owner sales-call CTA — reuses the same Cal event as the on-site booking. */
+const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK ?? "your-cal-username/free-estimate";
 
 /**
  * ConceptBanner — shown ONLY on personalized drafts (the [slug] route).
@@ -67,15 +66,15 @@ export default function ConceptBanner({ name }: { name: string }) {
               Fully mobile-ready, with free estimates and online booking built in. Your services, branding and photos come in the final build.
             </p>
 
-            {/* Owner conversion CTA — book a sales call with me */}
+            {/* Owner conversion CTA — book a call with the developer */}
             <a
-              href={`https://cal.com/${OWNER_CAL}`}
+              href={`https://cal.com/${CAL_LINK}`}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-2.5 inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 font-medium transition-opacity hover:opacity-90"
               style={{ fontSize: "12px", backgroundColor: "#B0552F", color: "#F7F4EE" }}
             >
-              Like it? Make it yours
+              Book a call with the developer
               <ArrowUpRight size={14} />
             </a>
           </div>
